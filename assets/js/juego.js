@@ -85,7 +85,7 @@ const turnoComputadora = ( puntosMinimos ) => {
 
     setTimeout(() => {
         if( puntosComputadora === puntosMinimos ) {
-            info.innerHTML = `Nadie Gana ambos tienen ${puntosComputadora}`
+            info.innerHTML = `Nadie Gana ambos tienen ${puntosComputadora} puntos`
         } else if ( puntosMinimos > 21 ) {
             info.innerHTML = `Computadora Gana con ${puntosComputadora} puntos`
             // alert('Computadora gana')
@@ -114,13 +114,13 @@ btnPedir.addEventListener('click', () => {
     divCartasJugador.append( imgCarta );
 
     if ( puntosJugador > 21 ) {
-        console.warn('Lo siento mucho, perdiste');
+        // console.warn('Lo siento mucho, perdiste');
         btnPedir.disabled   = true;
         btnDetener.disabled = true;
         turnoComputadora( puntosJugador );
 
     } else if ( puntosJugador === 21 ) {
-        console.warn('21, genial!');
+        // console.warn('21, genial!');
         btnPedir.disabled   = true;
         btnDetener.disabled = true;
         turnoComputadora( puntosJugador );
