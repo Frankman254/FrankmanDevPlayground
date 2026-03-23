@@ -21,3 +21,5 @@ export type Card = {
 };
 
 export type Winner = "player" | "house" | "push";
+export type DealerRule = "S17" | "H17";
+export type HandOutcome = "blackjack" | "win" | "lose" | "push";

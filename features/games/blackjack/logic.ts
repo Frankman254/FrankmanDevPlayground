@@ -1,18 +1,32 @@
-import type { Card, Rank, Suit, Winner } from "@/features/games/blackjack/types";
+import type {
+  Card,
+  DealerRule,
+  HandOutcome,
+  Rank,
+  Suit,
+  Winner,
+} from "@/features/games/blackjack/types";
 
 const suits: Suit[] = ["C", "D", "H", "S"];
 const ranks: Rank[] = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+const tenValueRanks = new Set<Rank>(["10", "J", "Q", "K"]);
 
-export function createDeck() {
+export function createDeck(deckCount = 1) {
   const deck: Card[] = [];
 
-  for (const suit of suits) {
-    for (const rank of ranks) {
-      deck.push({ suit, rank, code: `${rank}${suit}` });
+  for (let currentDeck = 0; currentDeck < deckCount; currentDeck += 1) {
+    for (const suit of suits) {
+      for (const rank of ranks) {
+        deck.push({ suit, rank, code: `${rank}${suit}` });
+      }
     }
   }
 
   return shuffleDeck(deck);
+}
+
+export function createShoe(deckCount = 6) {
+  return createDeck(deckCount);
 }
 
 export function shuffleDeck(deck: Card[]) {
@@ -28,7 +42,7 @@ export function shuffleDeck(deck: Card[]) {
 
 export function drawCard(deck: Card[]) {
   if (deck.length === 0) {
-    throw new Error("No cards left in the deck.");
+    throw new Error("No quedan cartas en el mazo.");
   }
 
   const nextDeck = [...deck];
@@ -37,7 +51,23 @@ export function drawCard(deck: Card[]) {
   return { card: card!, deck: nextDeck };
 }
 
+export function getCardValue(card: Card) {
+  if (card.rank === "A") {
+    return 11;
+  }
+
+  if (tenValueRanks.has(card.rank)) {
+    return 10;
+  }
+
+  return Number(card.rank);
+}
+
 export function getHandValue(hand: Card[]) {
+  return getHandValueDetails(hand).total;
+}
+
+export function getHandValueDetails(hand: Card[]) {
   let total = 0;
   let aceCount = 0;
 
@@ -48,7 +78,7 @@ export function getHandValue(hand: Card[]) {
       return;
     }
 
-    if (["J", "Q", "K"].includes(card.rank)) {
+    if (tenValueRanks.has(card.rank)) {
       total += 10;
       return;
     }
@@ -61,19 +91,77 @@ export function getHandValue(hand: Card[]) {
     aceCount -= 1;
   }
 
-  return total;
+  return {
+    total,
+    isSoft: aceCount > 0,
+    isBlackjack: hand.length === 2 && total === 21,
+  };
 }
 
-export function shouldHouseDraw(playerScore: number, houseScore: number) {
-  if (playerScore > 21) {
+export function isNaturalBlackjack(hand: Card[]) {
+  return hand.length === 2 && getHandValue(hand) === 21;
+}
+
+export function canSplitHand(hand: Card[]) {
+  if (hand.length !== 2) {
     return false;
   }
 
-  if (houseScore < 17) {
+  return getSplitValue(hand[0]) === getSplitValue(hand[1]);
+}
+
+export function shouldDealerDraw(hand: Card[], rule: DealerRule = "S17") {
+  const { isSoft, total } = getHandValueDetails(hand);
+
+  if (total < 17) {
     return true;
   }
 
-  return houseScore < playerScore && playerScore <= 21;
+  if (total > 17) {
+    return false;
+  }
+
+  return rule === "H17" && isSoft;
+}
+
+export function isDealerPeekCard(card: Card) {
+  return card.rank === "A" || tenValueRanks.has(card.rank);
+}
+
+export function canOfferInsurance(card?: Card) {
+  return card?.rank === "A";
+}
+
+export function resolveHandOutcome(
+  playerHand: Card[],
+  dealerHand: Card[],
+  playerHasNaturalBlackjack = isNaturalBlackjack(playerHand),
+): HandOutcome {
+  const playerScore = getHandValue(playerHand);
+  const dealerScore = getHandValue(dealerHand);
+  const dealerHasBlackjack = isNaturalBlackjack(dealerHand);
+
+  if (playerScore > 21) {
+    return "lose";
+  }
+
+  if (dealerHasBlackjack) {
+    return playerHasNaturalBlackjack ? "push" : "lose";
+  }
+
+  if (playerHasNaturalBlackjack) {
+    return "blackjack";
+  }
+
+  if (dealerScore > 21 || playerScore > dealerScore) {
+    return "win";
+  }
+
+  if (playerScore === dealerScore) {
+    return "push";
+  }
+
+  return "lose";
 }
 
 export function resolveWinner(playerScore: number, houseScore: number): Winner {
@@ -93,14 +181,26 @@ export function resolveWinner(playerScore: number, houseScore: number): Winner {
 }
 
 export function formatWinnerMessage(winner: Winner, playerScore: number, houseScore: number) {
-  const scores = `Player ${playerScore} - House ${houseScore}`;
+  const scores = `Jugador ${playerScore} - Casa ${houseScore}`;
 
   switch (winner) {
     case "player":
-      return `You win. ${scores}`;
+      return `Ganaste. ${scores}`;
     case "house":
-      return `House wins. ${scores}`;
+      return `La casa gana. ${scores}`;
     default:
-      return `Push game. ${scores}`;
+      return `Empate. ${scores}`;
   }
+}
+
+function getSplitValue(card: Card) {
+  if (card.rank === "A") {
+    return 11;
+  }
+
+  if (tenValueRanks.has(card.rank)) {
+    return 10;
+  }
+
+  return Number(card.rank);
 }

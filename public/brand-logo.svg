@@ -1,0 +1,15 @@
+<svg width="760" height="220" viewBox="0 0 760 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="14" y="26" width="168" height="168" rx="40" fill="#0C0C0F"/>
+  <rect x="42" y="50" width="24" height="118" rx="12" fill="#F5C400"/>
+  <rect x="42" y="50" width="76" height="22" rx="11" fill="#D72638"/>
+  <rect x="42" y="95" width="62" height="18" rx="9" fill="#F7F3EB"/>
+  <path d="M124 50H141C156 50 166 60 166 75V141C166 156 156 166 141 166H124" stroke="#F7F3EB" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M124 70H136C144 70 150 76 150 84V132C150 140 144 146 136 146H124V70Z" fill="#F7F3EB"/>
+  <circle cx="142" cy="42" r="7" fill="#F5C400"/>
+  <circle cx="160" cy="177" r="8" fill="#D72638"/>
+  <text x="220" y="72" fill="#6B6B73" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="8">PERSONAL BRAND</text>
+  <text x="220" y="130" fill="#0C0C0F" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="900" letter-spacing="12">FRANKMAN</text>
+  <circle cx="230" cy="168" r="8" fill="#F5C400"/>
+  <text x="252" y="176" fill="#D72638" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" letter-spacing="10">DEV</text>
+  <text x="220" y="206" fill="#6B6B73" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="5">SYSTEMS ENGINEER / WEB DEVELOPER</text>
+</svg>

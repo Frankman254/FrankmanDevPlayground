@@ -1,7 +1,9 @@
 import { z } from "zod";
 
-export const emailSchema = z.object({
-  email: z.email("Please provide a valid email address."),
-});
+export function createEmailSchema(message: string) {
+	return z.object({
+		email: z.email(message),
+	});
+}
 
-export type EmailSchema = z.infer<typeof emailSchema>;
+export type EmailSchema = z.infer<ReturnType<typeof createEmailSchema>>;

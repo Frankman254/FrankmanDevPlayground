@@ -5,7 +5,7 @@ test("home page shows the playground branding", async ({ page }) => {
 
   await expect(
     page.getByRole("heading", {
-      name: "A single home for games, useful apps and experiments.",
+      name: "Un solo lugar para juegos, aplicaciones utiles y experimentos.",
     }),
   ).toBeVisible();
 });

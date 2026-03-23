@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 
+import { useTranslations } from "@/components/providers/locale-provider";
 import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/section-heading";
 
@@ -17,12 +18,14 @@ const BlackjackGame = dynamic(
 );
 
 export default function BlackjackPage() {
+	const t = useTranslations();
+
   return (
     <div className="space-y-10">
       <SectionHeading
-        eyebrow="Game MVP"
-        title="Blackjack Reboot"
-        description="The legacy vanilla JavaScript demo is now a typed feature module with stronger score logic, a cleaner UX and an upgrade path for future stats."
+				description={t.blackjackPage.description}
+				eyebrow={t.blackjackPage.eyebrow}
+				title={t.blackjackPage.title}
       />
       <BlackjackGame />
     </div>
@@ -30,24 +33,30 @@ export default function BlackjackPage() {
 }
 
 function BlackjackLoadingState() {
+	const t = useTranslations();
+
   return (
     <Card className="space-y-6">
       <div>
         <p className="text-sm uppercase tracking-[0.3em] text-cyan-200">
-          Table status
+					{t.blackjackPage.loadingStatus}
         </p>
         <h2 className="mt-2 text-2xl font-semibold text-white">
-          Shuffling the deck...
+					{t.blackjackPage.loadingTitle}
         </h2>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
-          <p className="text-sm text-slate-400">Player</p>
-          <p className="mt-2 text-lg font-medium text-white">Preparing hand</p>
+					<p className="text-sm text-slate-400">{t.blackjackPage.player}</p>
+					<p className="mt-2 text-lg font-medium text-white">
+						{t.blackjackPage.preparingHand}
+					</p>
         </div>
         <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
-          <p className="text-sm text-slate-400">House</p>
-          <p className="mt-2 text-lg font-medium text-white">Preparing hand</p>
+					<p className="text-sm text-slate-400">{t.blackjackPage.house}</p>
+					<p className="mt-2 text-lg font-medium text-white">
+						{t.blackjackPage.preparingHand}
+					</p>
         </div>
       </div>
     </Card>

@@ -1,16 +1,21 @@
+"use client";
+
+import { useLocale, useTranslations } from "@/components/providers/locale-provider";
 import { ItemCard } from "@/components/item-card";
 import { SectionHeading } from "@/components/section-heading";
-import { catalogItems } from "@/lib/catalog";
+import { getCatalogItems } from "@/lib/catalog";
 
 export default function GamesPage() {
-  const games = catalogItems.filter((item) => item.category === "game");
+	const { locale } = useLocale();
+	const t = useTranslations();
+	const games = getCatalogItems(locale).filter((item) => item.category === "game");
 
   return (
     <div className="space-y-10">
       <SectionHeading
-        eyebrow="Games"
-        title="Polished browser games with clean logic."
-        description="This section is where casual play meets better engineering practices, starting with a reboot of the original blackjack project."
+				description={t.gamesPage.description}
+				eyebrow={t.gamesPage.eyebrow}
+				title={t.gamesPage.title}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
