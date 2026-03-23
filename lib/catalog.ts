@@ -36,6 +36,18 @@ export function getCatalogItems(locale: Locale): CatalogItem[] {
 				featured: true,
 			},
 			{
+				slug: "chess",
+				title: "Playground Chess",
+				description:
+					"A complete local chess game with legal move validation, endgame rules and a CPU-ready engine core.",
+				href: "/games/chess",
+				category: "game",
+				status: "live",
+				iconName: "BrainCircuit",
+				tags: ["Strategy", "Board game", "Local multiplayer"],
+				ctaLabel: "Open board",
+			},
+			{
 				slug: "todos",
 				title: "Todos Hub",
 				description:
@@ -100,6 +112,18 @@ export function getCatalogItems(locale: Locale): CatalogItem[] {
 			tags: ["Cartas", "Logica", "Un jugador"],
 			ctaLabel: "Jugar ahora",
 			featured: true,
+		},
+		{
+			slug: "chess",
+			title: "Ajedrez de Playground",
+			description:
+				"Una partida de ajedrez completa en local, con movimientos legales, finales reales y una base lista para CPU.",
+			href: "/games/chess",
+			category: "game",
+			status: "live",
+			iconName: "BrainCircuit",
+			tags: ["Estrategia", "Tablero", "Multijugador local"],
+			ctaLabel: "Abrir tablero",
 		},
 		{
 			slug: "todos",
