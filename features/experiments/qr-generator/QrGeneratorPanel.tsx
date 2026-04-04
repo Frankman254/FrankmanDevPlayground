@@ -51,7 +51,7 @@ interface ContactFields {
 }
 
 const DEFAULT_ICON_SCALE = 20;
-const DEFAULT_HOLE_SCALE = 28;
+const DEFAULT_HOLE_SCALE = 0;
 const DEFAULT_EXPORT_CUSTOM_SIZE = 1600;
 const QR_FOREGROUND = '#0f172a';
 const QR_BACKGROUND = '#ffffff';
@@ -280,7 +280,7 @@ function buildSvgExportMarkup({
 
 	const iconMarkup = iconDataUri
 		? `
-        <rect x="${holeX}" y="${holeY}" width="${holeSize}" height="${holeSize}" rx="${holeSize * 0.18}" ry="${holeSize * 0.18}" fill="#ffffff" />
+        ${holeSize > 0 ? `<rect x="${holeX}" y="${holeY}" width="${holeSize}" height="${holeSize}" rx="${holeSize * 0.18}" ry="${holeSize * 0.18}" fill="#ffffff" />` : ''}
         <image
           href="${escapeXml(iconDataUri)}"
           x="${holeX + (holeSize - iconSize) / 2}"
@@ -535,16 +535,18 @@ export function QrGeneratorPanel() {
 			const scaledCenterX = holeCenterX * scale;
 			const scaledCenterY = holeCenterY * scale;
 
-			ctx.fillStyle = '#ffffff';
-			drawRoundedRect(
-				ctx,
-				holeX * scale,
-				holeY * scale,
-				scaledHole,
-				scaledHole,
-				scaledHole * 0.18
-			);
-			ctx.fill();
+			if (scaledHole > 0) {
+				ctx.fillStyle = '#ffffff';
+				drawRoundedRect(
+					ctx,
+					holeX * scale,
+					holeY * scale,
+					scaledHole,
+					scaledHole,
+					scaledHole * 0.18
+				);
+				ctx.fill();
+			}
 
 			const image = new Image();
 			if (!iconSrc.startsWith('data:')) image.crossOrigin = 'anonymous';
@@ -585,7 +587,7 @@ export function QrGeneratorPanel() {
 
 		ctx.clearRect(0, 0, size, size);
 		if (selectedIcon) drawOverlay(ctx, 1, selectedIcon);
-	}, [drawOverlay, selectedIcon, size]);
+	}, [activeQrMatrix, drawOverlay, selectedIcon, size]);
 
 	const handleIconUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -761,7 +763,7 @@ export function QrGeneratorPanel() {
 
 	const buttonGroupClass = (active: boolean) =>
 		cn(
-			'rounded-2xl border px-4 py-3 text-sm font-semibold transition-colors',
+			'min-w-0 rounded-2xl border px-3 py-3 text-center text-xs font-semibold leading-tight whitespace-normal [text-wrap:balance] transition-colors sm:px-4 sm:text-sm',
 			active
 				? 'border-[#F5C400]/45 bg-[#F5C400]/10 text-[#F5C400]'
 				: 'border-white/10 bg-white/[0.03] text-[#F7F3EB]/75 hover:border-[#F5C400]/25 hover:text-white'
@@ -812,8 +814,8 @@ export function QrGeneratorPanel() {
 				</div>
 				<span
 					className={cn(
-						'w-full truncate text-center font-medium text-[#F7F3EB]/90',
-						compact ? 'text-[11px]' : 'text-sm'
+						'w-full text-center font-medium leading-tight text-[#F7F3EB]/90 whitespace-normal break-words',
+						compact ? 'text-[11px]' : 'text-xs sm:text-sm'
 					)}
 				>
 					{label}
@@ -897,7 +899,7 @@ export function QrGeneratorPanel() {
 					{q.uploadIcon}
 				</button>
 			</div>
-			<div className="mt-4 grid grid-cols-2 gap-3">
+			<div className="mt-4 grid grid-cols-3 gap-3">
 				{defaultQrCenterIcons.map(option => iconButton(option))}
 			</div>
 			{customIcons.length > 0 ? (
@@ -905,7 +907,7 @@ export function QrGeneratorPanel() {
 					<p className="mb-2 text-xs font-medium text-[#F7F3EB]/50">
 						{q.uploadedSection}
 					</p>
-					<div className="grid grid-cols-2 gap-3">
+					<div className="grid grid-cols-3 gap-3">
 						{customIcons.map(option => iconButton(option))}
 					</div>
 				</div>
@@ -1336,7 +1338,7 @@ export function QrGeneratorPanel() {
 								<SliderRow
 									label={q.holeSize}
 									max={34}
-									min={20}
+									min={0}
 									onChange={setHoleScale}
 									step={1}
 									unit="%"
@@ -1540,7 +1542,7 @@ export function QrGeneratorPanel() {
 									<SliderRow
 										label={q.holeShort}
 										max={34}
-										min={20}
+										min={0}
 										onChange={setHoleScale}
 										step={1}
 										unit="%"

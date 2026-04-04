@@ -77,12 +77,6 @@ export const translations = {
 			openModule: 'Abrir modulo',
 			items: [
 				{
-					title: 'Generador QR',
-					description:
-						'Utilidad para enlaces y campanias: icono central, titulo estilizado y PNG listo para compartir.',
-					href: '/experiments/qr-generator',
-				},
-				{
 					title: 'Live Wallpaper Anime Glitch',
 					description:
 						'Experiencia visual pesada alojada fuera del monorepo; pagina puente con enlace a la demo en Netlify.',
@@ -416,9 +410,16 @@ export const translations = {
 				none: 'Sin icono',
 				playground: 'Logo Playground',
 				whatsapp: 'WhatsApp',
-				phone: 'Telefono',
-				globe: 'Sitio web',
-				location: 'Ubicacion',
+				browser: 'Navegador',
+				smartphone: 'Smartphone',
+				mapPin: 'Ubicacion',
+				mail: 'Email',
+				instagram: 'Instagram',
+				github: 'GitHub',
+				youtube: 'YouTube',
+				message: 'Mensaje',
+				calendar: 'Calendario',
+				shoppingBag: 'Tienda',
 			},
 			editor: {
 				titleLabel: 'Titulo bajo el QR',
@@ -556,12 +557,6 @@ export const translations = {
 				'This section protects momentum: not every concept needs to be a full product before it has a home in the platform.',
 			openModule: 'Open module',
 			items: [
-				{
-					title: 'QR generator',
-					description:
-						'Utility for links and campaigns: center icon, styled caption and share-ready PNG.',
-					href: '/experiments/qr-generator',
-				},
 				{
 					title: 'Live Wallpaper Anime Glitch',
 					description:
@@ -896,9 +891,16 @@ export const translations = {
 				none: 'No icon',
 				playground: 'Playground logo',
 				whatsapp: 'WhatsApp',
-				phone: 'Phone',
-				globe: 'Website',
-				location: 'Location',
+				browser: 'Browser',
+				smartphone: 'Smartphone',
+				mapPin: 'Location',
+				mail: 'Email',
+				instagram: 'Instagram',
+				github: 'GitHub',
+				youtube: 'YouTube',
+				message: 'Message',
+				calendar: 'Calendar',
+				shoppingBag: 'Store',
 			},
 			editor: {
 				titleLabel: 'Caption under QR',
