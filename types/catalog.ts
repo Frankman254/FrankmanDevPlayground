@@ -7,6 +7,7 @@ export type CatalogItem = {
   slug: string;
   title: string;
   description: string;
+  /** Internal path or absolute URL; `http` links open in a new tab from the catalog card. */
   href: string;
   category: CatalogCategory;
   status: ItemStatus;

@@ -10,6 +10,10 @@ import { iconMap } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 import type { CatalogItem } from "@/types/catalog";
 
+function isExternalHref(href: string) {
+  return /^https?:\/\//i.test(href);
+}
+
 export function ItemCard({
   item,
   className,
@@ -17,8 +21,15 @@ export function ItemCard({
   item: CatalogItem;
   className?: string;
 }) {
-	const t = useTranslations();
+  const t = useTranslations();
   const Icon = iconMap[item.iconName];
+  const external = isExternalHref(item.href);
+
+  const cta = (
+    <Button className="w-full" variant={item.status === "live" ? "default" : "secondary"}>
+      {item.ctaLabel}
+    </Button>
+  );
 
   return (
     <Card className={cn("flex h-full flex-col justify-between gap-6", className)}>
@@ -28,7 +39,7 @@ export function ItemCard({
             {Icon ? <Icon className="size-6" /> : null}
           </div>
           <Badge variant={item.status === "live" ? "success" : "muted"}>
-					{item.status === "live" ? t.common.live : t.common.comingSoon}
+            {item.status === "live" ? t.common.live : t.common.comingSoon}
           </Badge>
         </div>
         <div className="space-y-2">
@@ -44,11 +55,13 @@ export function ItemCard({
         </div>
       </div>
 
-      <Link href={item.href}>
-        <Button className="w-full" variant={item.status === "live" ? "default" : "secondary"}>
-          {item.ctaLabel}
-        </Button>
-      </Link>
+      {external ? (
+        <a href={item.href} rel="noopener noreferrer" target="_blank">
+          {cta}
+        </a>
+      ) : (
+        <Link href={item.href}>{cta}</Link>
+      )}
     </Card>
   );
 }

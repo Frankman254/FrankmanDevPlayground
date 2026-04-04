@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { Maximize2, Minimize2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useTranslations } from "@/components/providers/locale-provider";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,9 @@ export function ChessGame() {
   const [cpuEnabled, setCpuEnabled] = useState(false);
   const [humanColor, setHumanColor] = useState<ChessColor>("white");
   const [cpuThinking, setCpuThinking] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
+  const shellRef = useRef<HTMLDivElement>(null);
   const gameRef = useRef(game);
   const cpuEnabledRef = useRef(cpuEnabled);
   const humanColorRef = useRef(humanColor);
@@ -59,6 +62,28 @@ export function ChessGame() {
     humanColorRef.current = humanColor;
     pendingPromotionRef.current = pendingPromotion;
   }, [cpuEnabled, game, humanColor, pendingPromotion]);
+
+  useEffect(() => {
+    function onFullscreenChange() {
+      setIsFullscreen(document.fullscreenElement === shellRef.current);
+    }
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    const el = shellRef.current;
+    if (!el) return;
+    try {
+      if (!document.fullscreenElement) {
+        await el.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch {
+      /* unsupported or denied */
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -198,10 +223,26 @@ export function ChessGame() {
     setSelectedSquare(null);
   }
 
+  const fs = isFullscreen;
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-      <div className="space-y-6">
-        <SurfaceCard className="relative space-y-5 overflow-hidden">
+    <div
+      className={cn(
+        fs && "flex max-h-[100dvh] min-h-0 w-full flex-col overflow-hidden bg-[#0C0C0F] p-2 sm:p-4",
+      )}
+      ref={shellRef}
+    >
+      <div
+        className={cn(
+          "gap-4 sm:gap-6",
+          fs
+            ? "flex min-h-0 flex-1 flex-col overflow-hidden xl:flex-row xl:items-stretch xl:gap-5"
+            : "grid lg:grid-cols-[1.15fr_0.85fr] lg:items-start",
+          fs && "min-h-0 flex-1",
+        )}
+      >
+        <div className={cn(fs ? "flex min-h-0 min-w-0 flex-1 flex-col gap-3 overflow-hidden" : "space-y-6")}>
+        <SurfaceCard className={cn("relative space-y-5 overflow-hidden", fs && "shrink-0 space-y-4 p-4 sm:p-5")}>
           <motion.div
             animate={{ opacity: [0.14, 0.24, 0.14] }}
             className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top,rgba(245,196,0,0.22),transparent_72%)]"
@@ -267,6 +308,18 @@ export function ChessGame() {
                 >
                   {t.chess.flip}
                 </Button>
+                <Button
+                  className="inline-flex gap-2"
+                  onClick={toggleFullscreen}
+                  title={fs ? t.chess.exitFullscreen : t.chess.fullscreen}
+                  type="button"
+                  variant="ghost"
+                >
+                  {fs ? <Minimize2 className="size-4 shrink-0" /> : <Maximize2 className="size-4 shrink-0" />}
+                  <span className="max-w-[10rem] truncate sm:max-w-none">
+                    {fs ? t.chess.exitFullscreen : t.chess.fullscreen}
+                  </span>
+                </Button>
               </div>
             </div>
           </div>
@@ -279,17 +332,24 @@ export function ChessGame() {
           </motion.div>
         </SurfaceCard>
 
-        <SurfaceCard className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <SurfaceCard className={cn("space-y-5", fs && "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden")}>
+          <div
+            className={cn(
+              "flex flex-wrap items-center justify-between gap-4",
+              fs && "shrink-0 gap-3",
+            )}
+          >
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-[#F5C400]">
                 {t.chess.boardTitle}
               </p>
-              <h3 className="mt-2 text-xl font-semibold text-white">{t.chess.turn}</h3>
+              <h3 className={cn("mt-2 font-semibold text-white", fs ? "text-lg" : "text-xl")}>
+                {t.chess.turn}
+              </h3>
             </div>
 
             <div className="flex flex-col items-end gap-1 sm:items-end">
-              <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[#F7F3EB]/75">
+              <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-[#F7F3EB]/75 sm:px-4 sm:py-2">
                 {game.turn === "white" ? t.chess.whiteToMove : t.chess.blackToMove}
               </div>
               {cpuEnabled && cpuThinking ? (
@@ -298,12 +358,22 @@ export function ChessGame() {
             </div>
           </div>
 
-          <div className="rounded-[32px] border border-white/10 bg-[#09121A] p-3 shadow-2xl shadow-black/30">
-            <div className="grid grid-cols-[auto_1fr] gap-3">
-              <div className="grid grid-rows-8 gap-1">
+          <div
+            className={cn(
+              "rounded-[32px] border border-white/10 bg-[#09121A] shadow-2xl shadow-black/30",
+              fs ? "flex min-h-0 flex-1 flex-col p-2 sm:p-3" : "p-3",
+            )}
+          >
+            <div
+              className={cn(
+                "grid grid-cols-[auto_1fr] gap-2 sm:gap-3",
+                fs && "min-h-0 min-w-0 flex-1",
+              )}
+            >
+              <div className="grid grid-rows-8 gap-0.5 sm:gap-1">
                 {ranks.map((rank) => (
                   <div
-                    className="flex items-center justify-center text-xs font-medium text-[#F7F3EB]/45"
+                    className="flex items-center justify-center text-[10px] font-medium text-[#F7F3EB]/45 sm:text-xs"
                     key={`rank-${rank}`}
                   >
                     {rank}
@@ -311,8 +381,19 @@ export function ChessGame() {
                 ))}
               </div>
 
-              <div className="space-y-2">
-                <div className="grid aspect-square grid-cols-8 gap-1">
+              <div
+                className={cn(
+                  "min-w-0 space-y-1 sm:space-y-2",
+                  fs && "flex min-h-0 min-w-0 flex-1 flex-col justify-center",
+                )}
+              >
+                <div
+                  className={cn(
+                    "grid aspect-square grid-cols-8 gap-0.5 sm:gap-1",
+                    fs &&
+                      "mx-auto w-full max-w-[min(92vmin,calc(100dvh-12rem))] max-h-[min(92vmin,calc(100dvh-12rem))]",
+                  )}
+                >
                   {ranks.flatMap((rank) =>
                     files.map((file) => {
                       const square = `${file}${rank}` as Square;
@@ -378,10 +459,10 @@ export function ChessGame() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-8 gap-1 pl-1">
+                <div className="grid grid-cols-8 gap-0.5 pl-0.5 sm:gap-1 sm:pl-1">
                   {files.map((file) => (
                     <div
-                      className="text-center text-xs font-medium text-[#F7F3EB]/45"
+                      className="text-center text-[10px] font-medium text-[#F7F3EB]/45 sm:text-xs"
                       key={`file-${file}`}
                     >
                       {file}
@@ -392,9 +473,15 @@ export function ChessGame() {
             </div>
           </div>
         </SurfaceCard>
-      </div>
+        </div>
 
-      <div className="space-y-6">
+      <div
+        className={cn(
+          "space-y-6",
+          fs &&
+            "max-h-[42vh] shrink-0 overflow-y-auto pb-1 xl:max-h-none xl:w-[min(22rem,34vw)] xl:shrink-0 xl:overflow-y-auto",
+        )}
+      >
         <SurfaceCard className="space-y-5">
           <p className="text-sm uppercase tracking-[0.3em] text-[#F5C400]">{t.chess.summary}</p>
 
@@ -473,12 +560,13 @@ export function ChessGame() {
           </ul>
         </SurfaceCard>
       </div>
+      </div>
 
       <AnimatePresence>
         {pendingPromotion ? (
           <motion.div
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
           >
