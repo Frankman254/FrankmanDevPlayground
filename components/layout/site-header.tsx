@@ -20,6 +20,7 @@ export function SiteHeader() {
 		{ href: '/', label: t.nav.home },
 		{ href: '/games', label: t.nav.games },
 		{ href: '/apps', label: t.nav.apps },
+		{ href: '/utilities', label: t.nav.utilities },
 		{ href: '/experiments', label: t.nav.experiments },
 		{ href: '/profile', label: t.nav.profile },
 	];

@@ -91,6 +91,18 @@ export function getCatalogItems(locale: Locale): CatalogItem[] {
 				ctaLabel: 'Open tool',
 			},
 			{
+				slug: 'open-links',
+				title: 'Open Links',
+				description:
+					'Paste a list of URLs or upload a TXT file and open them quickly in new browser tabs.',
+				href: '/utilities/open-links',
+				category: 'utility',
+				status: 'live',
+				iconName: 'Layers3',
+				tags: ['Links', 'Browser', 'Automation'],
+				ctaLabel: 'Open utility',
+			},
+			{
 				slug: 'live-wallpaper',
 				title: 'Live Wallpaper Anime Glitch',
 				description:
@@ -203,6 +215,18 @@ export function getCatalogItems(locale: Locale): CatalogItem[] {
 			iconName: 'QrCode',
 			tags: ['Utilidad', 'Exportar', 'Marca'],
 			ctaLabel: 'Abrir herramienta',
+		},
+		{
+			slug: 'open-links',
+			title: 'Abrir Enlaces',
+			description:
+				'Pega una lista de URLs o sube un archivo TXT para abrirlas rapido en pestañas nuevas del navegador.',
+			href: '/utilities/open-links',
+			category: 'utility',
+			status: 'live',
+			iconName: 'Layers3',
+			tags: ['Enlaces', 'Navegador', 'Automatizacion'],
+			ctaLabel: 'Abrir utilidad',
 		},
 		{
 			slug: 'live-wallpaper',

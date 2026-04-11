@@ -18,7 +18,6 @@ import {
 } from "@/lib/i18n/translations";
 
 const STORAGE_KEY = "frankmandev-playground-locale";
-const LOCALE_EVENT = "frankmandev-playground-locale-change";
 
 type LocaleContextValue = {
 	locale: Locale;
@@ -28,22 +27,68 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | undefined>(undefined);
 
+// Almacenamiento del estado de idioma fuera del componente
+let storageLocale: Locale | null = null;
+const listeners = new Set<() => void>();
+
+function getStorageLocale(): Locale {
+	if (typeof window === "undefined") {
+		return defaultLocale;
+	}
+	if (storageLocale !== null) {
+		return storageLocale;
+	}
+	const stored = window.localStorage.getItem(STORAGE_KEY);
+	storageLocale = stored && isLocale(stored) ? stored : defaultLocale;
+	return storageLocale;
+}
+
+function setStorageLocale(locale: Locale) {
+	storageLocale = locale;
+	if (typeof window !== "undefined") {
+		window.localStorage.setItem(STORAGE_KEY, locale);
+	}
+	notifyListeners();
+}
+
+function notifyListeners() {
+	listeners.forEach((listener) => listener());
+}
+
+function subscribe(listener: () => void) {
+	listeners.add(listener);
+	return () => {
+		listeners.delete(listener);
+	};
+}
+
+function getClientSnapshot(): Locale {
+	return getStorageLocale();
+}
+
+function getServerSnapshot(): Locale {
+	return defaultLocale;
+}
+
 export function LocaleProvider({ children }: { children: ReactNode }) {
 	const locale = useSyncExternalStore(
-		subscribeToLocale,
-		getClientLocaleSnapshot,
-		getServerLocaleSnapshot,
+		subscribe,
+		getClientSnapshot,
+		getServerSnapshot,
 	);
 
 	useEffect(() => {
-		window.localStorage.setItem(STORAGE_KEY, locale);
 		document.documentElement.lang = locale;
 	}, [locale]);
+
+	const setLocale = (newLocale: Locale) => {
+		setStorageLocale(newLocale);
+	};
 
 	const value = useMemo(
 		() => ({
 			locale,
-			setLocale: updateLocale,
+			setLocale,
 			t: translations[locale],
 		}),
 		[locale],
@@ -66,39 +111,4 @@ export function useLocale() {
 
 export function useTranslations() {
 	return useLocale().t;
-}
-
-function subscribeToLocale(callback: () => void) {
-	if (typeof window === "undefined") {
-		return () => {};
-	}
-
-	const handleStorage = () => callback();
-	const handleCustomEvent = () => callback();
-
-	window.addEventListener("storage", handleStorage);
-	window.addEventListener(LOCALE_EVENT, handleCustomEvent);
-
-	return () => {
-		window.removeEventListener("storage", handleStorage);
-		window.removeEventListener(LOCALE_EVENT, handleCustomEvent);
-	};
-}
-
-function getClientLocaleSnapshot(): Locale {
-	const storedLocale = window.localStorage.getItem(STORAGE_KEY);
-	return storedLocale && isLocale(storedLocale) ? storedLocale : defaultLocale;
-}
-
-function getServerLocaleSnapshot(): Locale {
-	return defaultLocale;
-}
-
-function updateLocale(locale: Locale) {
-	if (typeof window === "undefined") {
-		return;
-	}
-
-	window.localStorage.setItem(STORAGE_KEY, locale);
-	window.dispatchEvent(new Event(LOCALE_EVENT));
 }

@@ -5,21 +5,20 @@ import { ItemCard } from "@/components/item-card";
 import { SectionHeading } from "@/components/section-heading";
 import { getCatalogItems } from "@/lib/catalog";
 
-export default function AppsPage() {
-	const { locale } = useLocale();
-	const t = useTranslations();
-	const apps = getCatalogItems(locale).filter((item) => item.category === "app");
+export default function UtilitiesPage() {
+  const { locale } = useLocale();
+  const t = useTranslations();
+  const utilities = getCatalogItems(locale).filter((item) => item.category === "utility");
 
   return (
     <div className="space-y-10">
       <SectionHeading
-			description={t.appsPage.description}
-			eyebrow={t.appsPage.eyebrow}
-			title={t.appsPage.title}
+        eyebrow={t.utilitiesPage.eyebrow}
+        title={t.utilitiesPage.title}
+        description={t.utilitiesPage.description}
       />
-
       <div className="grid gap-6 lg:grid-cols-2">
-        {apps.map((item) => (
+        {utilities.map((item) => (
           <ItemCard item={item} key={item.slug} />
         ))}
       </div>

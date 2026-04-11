@@ -14,6 +14,7 @@ export const translations = {
 			home: 'Inicio',
 			games: 'Juegos',
 			apps: 'Aplicaciones',
+			utilities: 'Utilidades',
 			experiments: 'Experimentos',
 			profile: 'Perfil',
 			signIn: 'Iniciar sesion',
@@ -68,6 +69,12 @@ export const translations = {
 			title: 'Herramientas utiles que pueden crecer con datos de usuario.',
 			description:
 				'La parte de apps del playground se enfoca en utilidades practicas que funcionan al instante para invitados y mejoran cuando activas perfiles y sincronizacion.',
+		},
+		utilitiesPage: {
+			eyebrow: 'Utilidades',
+			title: 'Herramientas simples para tareas rapidas.',
+			description:
+				'Un conjunto creciente de utilidades ligeras para problemas puntuales, listas para usar sin configuracion adicional.',
 		},
 		experimentsPage: {
 			eyebrow: 'Experimentos',
@@ -496,6 +503,7 @@ export const translations = {
 			home: 'Home',
 			games: 'Games',
 			apps: 'Apps',
+			utilities: 'Utilities',
 			experiments: 'Experiments',
 			profile: 'Profile',
 			signIn: 'Sign in',
@@ -549,6 +557,12 @@ export const translations = {
 			title: 'Useful tools that can grow with user data.',
 			description:
 				'The apps side of the playground focuses on practical utilities that work instantly for guests and become even better when profiles and sync are enabled.',
+		},
+		utilitiesPage: {
+			eyebrow: 'Utilities',
+			title: 'Simple tools for fast tasks.',
+			description:
+				'A growing set of lightweight utilities for one-off problems, ready to use with no setup needed.',
 		},
 		experimentsPage: {
 			eyebrow: 'Experiments',

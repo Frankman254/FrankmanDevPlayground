@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-export type CatalogCategory = "game" | "app" | "experiment";
+export type CatalogCategory = "game" | "app" | "utility" | "experiment";
 export type ItemStatus = "live" | "coming-soon";
 
 export type CatalogItem = {
